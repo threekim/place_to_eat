@@ -599,7 +599,7 @@
     margin-bottom: auto;
     margin-top: auto;
     height: 60px;
-    background-color: #353b48;
+    background-color: #fef01b;
     border-radius: 30px;
     padding: 10px;
     }
@@ -615,16 +615,16 @@
     transition: width 0.4s linear;
     }
 
-    .searchbar:hover > .search_input{
+    .searchbar > .search_input{
     padding: 0 10px;
     width: 450px;
-    caret-color:red;
+    caret-color:#413137;
     transition: width 0.4s linear;
     }
 
-    .searchbar:hover > .search_icon{
+    .searchbar> .search_icon{
     background: white;
-    color: #e74c3c;
+    color: #413137;
     }
 
     .search_icon{
@@ -678,4 +678,48 @@
   line-height: 1.2rem
 }
 
+.restaurant_action_button_wrap {
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  margin-left: auto
+}
 
+.review_writing_button {
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-align-items: center;
+  align-items: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  margin: 20px 19px 0 0
+}
+
+.wannago_wrap {
+  float: right;
+  text-align: center;
+  position: relative
+}
+
+.info {
+  padding: 20px 0;
+  position: relative
+}
