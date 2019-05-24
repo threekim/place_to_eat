@@ -1,6 +1,6 @@
 from django.db import models
 from django.shortcuts import reverse
-
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
@@ -22,6 +22,9 @@ class Place(models.Model):
     price = models.CharField(max_length=30, null=True)
     car = models.CharField(max_length=20, null=True)
     opening_hour = models.CharField(max_length=20, null=True)
+
+    like = models.ManyToManyField(User, related_name='like_post', blank=True)
+    favorite = models.ManyToManyField(User, related_name='favorite_post', blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.detail_category in ('카페 / 디저트', '베이커리'):

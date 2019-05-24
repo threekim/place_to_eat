@@ -4,8 +4,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from .forms import SignUpForm
-from django.views.generic.list import ListView
-from .models import Follow
+
 
 
 def signup(request):

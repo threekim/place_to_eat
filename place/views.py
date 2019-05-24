@@ -3,6 +3,12 @@ from .models import Area, Place
 from bs4 import BeautifulSoup
 import random
 import requests
+from django.views.generic.base import View
+from django.http import HttpResponseForbidden, HttpResponseRedirect
+from urllib.parse import urlparse
+from django.views.generic.list import ListView
+from django.contrib import messages
+
 
 CUSTOM_HEADER = {
     'referer': 'https://www.naver.com',
@@ -74,6 +80,74 @@ def search_view(request):
     return redirect(random_place)
 
 
+class PlaceLike(View):
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:    #로그인확인
+            return HttpResponseForbidden()
+        else:
+            if 'place_id' in kwargs:
+                place_id = kwargs['place_id']
+                place = Place.objects.get(pk=place_id)
+                user = request.user
+                if user in place.like.all():
+                    place.like.remove(user)
+                else:
+                    place.like.add(user)
+            referer_url = request.META.get('HTTP_REFERER')
+            path = urlparse(referer_url).path
+            return HttpResponseRedirect(path)
+
+
+class PlaceFavorite(View):
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:    #로그인확인
+            return HttpResponseForbidden()
+        else:
+            if 'place_id' in kwargs:
+                place_id = kwargs['place_id']
+                place = Place.objects.get(pk=place_id)
+                user = request.user
+                if user in place.favorite.all():
+                    place.favorite.remove(user)
+                else:
+                    place.favorite.add(user)
+            referer_url = request.META.get('HTTP_REFERER')
+            path = urlparse(referer_url).path
+            return HttpResponseRedirect(path)
+
+
+class PlaceLikeList(ListView):
+    model = Place
+    template_name = 'place/place_likelist.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:  # 로그인확인
+            messages.warning(request, '로그인을 먼저하세요')
+            return HttpResponseRedirect('/')
+        return super(PlaceLikeList, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        # 내가 좋아요한 글을 보여주
+        user = self.request.user
+        queryset = user.like_post.all()
+        return queryset
+
+
+class PlaceFavoriteList(ListView):
+    model = Place
+    template_name = 'place/place_favoritelist.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:  # 로그인확인
+            messages.warning(request, '로그인을 먼저하세요')
+            return HttpResponseRedirect('/')
+        return super(PlaceFavoriteList, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        # 내가 좋아요한 글을 보여주기
+        user = self.request.user
+        queryset = user.favorite_post.all()
+        return queryset
 
 
 
