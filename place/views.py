@@ -23,7 +23,6 @@ def search_place_list(search_key):
         page_request = requests.get(page_url, headers=CUSTOM_HEADER)
         soup = BeautifulSoup(page_request.text, "html.parser")
         places = soup.select("figure.restaurant-item ")
-
         for place in places:
             place_img_url = place.select_one("img").get('data-original')
             if place_img_url is None:
@@ -43,7 +42,7 @@ def search_place_list(search_key):
             place_detail_category = place_dict.get('음식 종류')
             place_price = place_dict.get('가격대')
             if place_price is None:
-                continue
+                place_price = '만원-2만원'
             place_car = place_dict.get('주차')
             place_opening_hour = place_dict.get('영업시간')
 
@@ -58,7 +57,6 @@ def search_place_list(search_key):
                                              opening_hour=place_opening_hour)
             place_obj.area.add(area)
             place_obj.save()
-        return
 
 
 def search_view(request):
@@ -79,10 +77,10 @@ def search_view(request):
     area_filter = Area.objects.filter(name=search_key)
 
     if area_filter.exists():
-        place_filter = area_filter[0].places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
+        place_filter = area_filter[0].places.filter((bob_Q| sool_Q| desert_Q) & (money1_Q| money2_Q| money3_Q))
     else:
         search_place_list(search_key)
-        place_filter = Area.objects.get(name=search_key).places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
+        place_filter = Area.objects.get(name=search_key).places.filter((bob_Q| sool_Q| desert_Q) & (money1_Q| money2_Q| money3_Q))
     place_count = place_filter.count()
     random_index = random.randint(0, place_count-1)
     random_place = place_filter[random_index]
@@ -166,11 +164,4 @@ class PlaceFavoriteList(ListView):
         user = self.request.user
         queryset = user.favorite_post.all()
         return queryset
-
-
-
-
-
-
-
 
