@@ -67,12 +67,13 @@ def search_view(request):
     bob_Q = Q(category_id=3) if '밥' in food_type else Q()
     sool_Q = Q(category_id=1) if '술' in food_type else Q()
     desert_Q = Q(category_id=2) if '후식' in food_type else Q()
-
+    print(food_type)
     money_type = request.POST.getlist('money_type', '만원')
     money1_Q = Q(price='만원 미만') if '만원' in money_type else Q()
     money2_Q = Q(price='만원-2만원') if '2만원' in money_type else Q()
     money3_Q = Q(price='2만원-3만원') if '2만원이상' in money_type else Q()
     search_key = request.POST.get('search_key'.strip())
+    print(money_type)
 
     area_filter = Area.objects.filter(name=search_key)
 

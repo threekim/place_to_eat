@@ -19,20 +19,23 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto" style="float:right">
-            <li class="nav-item">
-                <a class="nav-link" href="/">좋아요</a>
-            </li>
-            <li class="nav-item" >
-                <a class="nav-link" href="/">찜 한 가게 보기</a>
-            </li>
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" href="/">좋아요</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item" >-->
+<!--                <a class="nav-link" href="/">찜 한 가게 보기</a>-->
+<!--            </li>-->
 
             {% if user.is_authenticated %}
             <li class="nav-item my-2 my-sm-0">
-                <a class="nav-link" href="#">Logout</a>
+                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="#">Login</a>
+                <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>
             </li>
             {% endif %}
         </ul>
