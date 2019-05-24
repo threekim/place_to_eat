@@ -44,11 +44,12 @@ class Place(models.Model):
         return reverse('place:detail', args=[self.id])
 
 
-DESSERT = ['카페 / 디저트', '베이커리']
+
 DESSERT_Q = Q(detail_category__icontains='카페 / 디저트') | Q(detail_category__icontains='베이커리')
 
-SOOL = ['일반 주점', '치킨 / 호프 / 펍', '칵테일 / 와인', '전통 주점 / 포차', '이자카야 / 오뎅 / 꼬치']
 SOOL_Q = Q(detail_category__icontains='일반 주점') | \
          Q(detail_category__icontains='칵테일 / 와인') | \
          Q(detail_category__icontains='치킨 / 호프 / 펍') | \
          Q(detail_category__icontains='전통 주점 / 포차') | Q(detail_category__icontains='이자카야 / 오뎅 / 꼬치')
+
+BOB_Q = ~DESSERT_Q & ~SOOL_Q
