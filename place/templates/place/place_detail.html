@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-12 col-xl-6 col-md-4">
+        <div class="card" style="">
+            <img src=" {{ object.image_url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+
+                <h5 class="card-title">{{ object.name }}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{ object.address }}</li>
+                <li class="list-group-item">{{ object.phone }}</li>
+                <li class="list-group-item">{{ object.detail_category }}</li>
+                <li class="list-group-item">{{ object.price }}</li>
+                <li class="list-group-item">{{ object.car }}</li>
+                <li class="list-group-item">{{ object.opening_hour }}</li>
+                <li class="list-group-item">
+                        <a href="{% url 'place:like' object.id %}" class="float-left btn-like {%if user in object.like.all %} active {%endif%}">좋아요!</a>
+                        {% if object.like.all.count %}
+                        <span class = "float-left">
+                            {{object.like.all.count}}
+                        </span>
+                        {% endif %}
+                        <a href="{% url 'place:favorite' object.id %}" class="float-right btn-favorite {%if user in object.favorite.all %} active {%endif%}">저장하기!</a>
+                    </li>
+                <li class="list-group-item">
+
+                    {% load disqus_tags %}
+                    <div class="card-body">
+                        {% disqus_show_comments %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col"></div>
+</div>
+{% endblock %}

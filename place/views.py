@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import DetailView
+
 from .models import Area, Place, BOB_Q, SOOL_Q, DESSERT_Q
 from bs4 import BeautifulSoup
 from django.db.models import Q
@@ -97,9 +99,9 @@ def search_view(request):
     return redirect(random_place)
 
 
-def detail_view(request, place_id):
-    get_object_or_404(Place, pk=place_id)
-    return render(request, 'place/detail_view.html', )
+class Detail_view(DetailView):
+    model = Place
+    template_name_suffix = '_detail'
 
 
 class PlaceLike(View):
