@@ -16,7 +16,6 @@ CUSTOM_HEADER = {
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/'
                   '537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
 }
-
 def search_place_list(search_key):
     area = Area.objects.create(name=search_key.strip())
     for i in range(1, 5):
@@ -48,16 +47,16 @@ def search_place_list(search_key):
             place_car = place_dict.get('주차')
             place_opening_hour = place_dict.get('영업시간')
 
-            place_obj = Place(name=place_name,
-                              url=place_url,
-                              image_url=place_img_url,
-                              address=place_address,
-                              phone=place_phone,
-                              detail_category=place_detail_category,
-                              price=place_price,
-                              car=place_car,
-                              opening_hour=place_opening_hour)
-            place_obj.add(area)
+            place_obj = Place.objects.create(name=place_name,
+                                             url=place_url,
+                                             image_url=place_img_url,
+                                             address=place_address,
+                                             phone=place_phone,
+                                             detail_category=place_detail_category,
+                                             price=place_price,
+                                             car=place_car,
+                                             opening_hour=place_opening_hour)
+            place_obj.area.add(area)
             place_obj.save()
         return
 
@@ -67,9 +66,9 @@ def search_view(request):
         return render(request, 'place/search_view.html')
 
     food_type = request.POST.getlist('food_type', '밥')
-    bob_Q = Q(category_Category_id=3) if '밥' in food_type else Q()
-    sool_Q = Q(category_Category_id=1) if '술' in food_type else Q()
-    desert_Q = Q(category_Category_id=2) if '후식' in food_type else Q()
+    bob_Q = Q(category_id=3) if '밥' in food_type else Q()
+    sool_Q = Q(category_id=1) if '술' in food_type else Q()
+    desert_Q = Q(category_id=2) if '후식' in food_type else Q()
 
     money_type = request.POST.getlist('money_type', '만원')
     money1_Q = Q(price='만원 미만') if '만원' in money_type else Q()
@@ -91,8 +90,9 @@ def search_view(request):
 
 
 def detail_view(request, place_id):
-    get_object_or_404(Place, pk=place_id)
-    return render(request, 'place/detail_view.html', )
+    object = get_object_or_404(Place, pk=place_id)
+    location_x =
+    return render(request, 'place/detail_view.html', {'object': object})
 
 
 class PlaceLike(View):
