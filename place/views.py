@@ -18,19 +18,17 @@ CUSTOM_HEADER = {
 }
 
 def search_place_list(search_key):
-
+    area = Area.objects.create(name=search_key.strip())
     for i in range(1, 5):
         page_url = "https://www.mangoplate.com/search/?keyword="+str(search_key)+"&page="+str(i)
         page_request = requests.get(page_url, headers=CUSTOM_HEADER)
         soup = BeautifulSoup(page_request.text, "html.parser")
         places = soup.select("figure.restaurant-item ")
-        place_list = list()
-        count = 0
+
         for place in places:
             place_img_url = place.select_one("img").get('data-original')
             if place_img_url is None:
                 continue
-
             place_url = "https://www.mangoplate.com" + place.select_one(".info a").get('href')
             place_request = requests.get(place_url, headers=CUSTOM_HEADER)
             place_soup = BeautifulSoup(place_request.text, "html.parser")
@@ -59,10 +57,9 @@ def search_place_list(search_key):
                               price=place_price,
                               car=place_car,
                               opening_hour=place_opening_hour)
+            place_obj.add(area)
             place_obj.save()
-            place_list.append(place_obj)
-            count += 1
-        return place_list[random.randint(0, count)]
+        return
 
 
 def search_view(request):
@@ -83,14 +80,10 @@ def search_view(request):
     area_filter = Area.objects.filter(name=search_key)
 
     if area_filter.exists():
-        area_places = area_filter[0].places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
-        count = area_places.count()
-        random_index = random.randint(0, count-1)
-        random_place = area_places[random_index]
-        return redirect(random_place)
-
-    search_place_list(search_key)
-    place_filter = Place.objects.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
+        place_filter = area_filter[0].places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
+    else:
+        search_place_list(search_key)
+        place_filter = Area.objects.get(name=search_key).places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
     place_count = place_filter.count()
     random_index = random.randint(0, place_count-1)
     random_place = place_filter[random_index]
