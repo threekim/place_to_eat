@@ -1,24 +1,30 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Area, Place
 from bs4 import BeautifulSoup
 import random
 import requests
 
+CUSTOM_HEADER = {
+    'referer': 'https://www.naver.com',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/'
+                  '537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
+}
 
-def search_place_list():
+def search_place_list(search_key):
+
     for i in range(1, 5):
-        page_url = "https://www.mangoplate.com/search/?keyword="+str(area)+"&page="+str(i)
-        page_request = requests.get(page_url, headers=custom_header)
+        page_url = "https://www.mangoplate.com/search/?keyword="+str(search_key)+"&page="+str(i)
+        page_request = requests.get(page_url, headers=CUSTOM_HEADER)
         soup = BeautifulSoup(page_request.text, "html.parser")
         places = soup.select("figure.restaurant-item ")
-
-        for place in places:
+        place_list = list()
+        for count, place in enumerate(places):
             place_img_url = place.select_one("img").get('data-original')
             if place_img_url is None:
                 continue
 
             place_url = "https://www.mangoplate.com" + place.select_one(".info a").get('href')
-            place_request = requests.get(place_url, headers=custom_header)
+            place_request = requests.get(place_url, headers=CUSTOM_HEADER)
             place_soup = BeautifulSoup(place_request.text, "html.parser")
             place_name = place_soup.select_one('h1.restaurant_name').text
             place_info = place_soup.select('table.info tr')
@@ -34,7 +40,6 @@ def search_place_list():
             place_car = place_dict.get('주차')
             place_opening_hour = place_dict.get('영업시간')
 
-
             place_obj = Place(name=place_name,
                               url=place_url,
                               image_url=place_img_url,
@@ -45,6 +50,9 @@ def search_place_list():
                               car=place_car,
                               opening_hour=place_opening_hour)
             place_obj.save()
+            place_list.append(place_obj)
+
+        return place_list[random.randint(0, count)]
 
 
 def search_view(request):
@@ -60,8 +68,11 @@ def search_view(request):
         count = area_places.count()
         random_index = random.randint(0, count-1)
         random_place = area_places[random_index]
-        context['object'] = random_place
-        return render(request, 'place/detail_view.html', context)
+        return redirect(random_place)
+
+    random_place = search_place_list(search_key)
+    return redirect(random_place)
+
 
 
 

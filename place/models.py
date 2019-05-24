@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import reverse
 
 
 class Category(models.Model):
@@ -33,3 +34,6 @@ class Place(models.Model):
             self.category = Category.objects.get(name='밥')
 
         return super().save(force_insert=False, force_update=False, using=None, update_fields=None)
+
+    def get_absolute_url(self):
+        return reverse('place:detail', args=[self.id])
