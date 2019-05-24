@@ -1,5 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+<<<<<<< HEAD
+from django.views.generic import DetailView
+
+from .models import Area, Place, BOB_Q, SOOL_Q, DESSERT_Q
+=======
 from .models import Area, Place
+>>>>>>> 5d55bdab8c258c2eaf54ea88ee0e41dffbd86c18
 from bs4 import BeautifulSoup
 from django.db.models import Q
 import random
@@ -89,13 +95,13 @@ def search_view(request):
     return redirect(random_place)
 
 
+
 def detail_view(request, place_id):
     object = get_object_or_404(Place, pk=place_id)
     location_x, location_y = object.address_to_location()
     return render(request, 'place/detail_view.html', {'object': object,
                                                       'location_x': location_x,
-                                                      'location_y': location_y}
-                  )
+                                                      'location_y': location_y})
 
 
 class PlaceLike(View):
