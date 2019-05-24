@@ -10,8 +10,52 @@
     <title>{% block title %}base{% endblock %}</title>
 </head>
 <body>
+{% load static %}
+   <style>
+   .btn-like{
+       display: inline-block;
+       width: 50px;
+       height: 50px;
+       background:url({% static 'images/instagramicon.png' %});
+       background-position: -100px -400px;
+       text-indent: -9999px;
+       overflow:hidden;
+       border:none;
+   }
+   .btn-like.active{
+   display: inline-block;
+       width: 50px;
+       height: 50px;
+       background:url({% static 'images/instagramicon.png' %});
+       background-position: -50px -400px;
+       text-indent: -9999px;
+       overflow:hidden;
+       border:none;
+   }
+    .btn-favorite{
+       display: inline-block;
+       width: 50px;
+       height: 50px;
+       background:url({% static 'images/instagramicon.png' %});
+       background-position: -515px -150px;
+       text-indent: -9999px;
+       overflow:hidden;
+       border:none;
+   }
+   .btn-favorite.active{
+   display: inline-block;
+       width: 50px;
+       height: 50px;
+       background:url({% static 'images/instagram.png' %});
+       background-position: -515px -100px;
+       text-indent: -9999px;
+       overflow:hidden;
+       border:none;
+   }
+
+   </style>
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <a class="navbar-brand" href="#">성수 Plate</a>
+    <a class="navbar-brand" href="{% url 'place:search' %}" style="padding: 0px 0px 0px 310px">성수 Plate</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -28,14 +72,14 @@
 
             {% if user.is_authenticated %}
             <li class="nav-item my-2 my-sm-0">
-                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                <a class="nav-link" href="{% url 'accounts:logout' %}" style="padding: 5px 10px 0px 400px">Logout</a>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                <a class="nav-link" href="{% url 'accounts:login' %}" style="padding: 5px 10px 0px 400px">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>
+                <a class="nav-link" href="{% url 'accounts:signup' %}" style="padding: 5px 10px 0px 0px">회원가입</a>
             </li>
             {% endif %}
         </ul>
