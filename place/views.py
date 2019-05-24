@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Area, Place
 from bs4 import BeautifulSoup
+from django.db.models import Q
 import random
 import requests
 
@@ -11,7 +12,6 @@ CUSTOM_HEADER = {
 }
 
 def search_place_list(search_key):
-
     for i in range(1, 5):
         page_url = "https://www.mangoplate.com/search/?keyword="+str(search_key)+"&page="+str(i)
         page_request = requests.get(page_url, headers=CUSTOM_HEADER)
@@ -51,8 +51,8 @@ def search_place_list(search_key):
                               opening_hour=place_opening_hour)
             place_obj.save()
             place_list.append(place_obj)
-
-        return place_list[random.randint(0, count)]
+            size = count
+        return place_list[random.randint(0, size)]
 
 
 def search_view(request):
@@ -70,8 +70,18 @@ def search_view(request):
         random_place = area_places[random_index]
         return redirect(random_place)
 
-    random_place = search_place_list(search_key)
+    search_place_list(search_key)
+    food_type = request.GET.getlist('food_type', 'title')
+    bob_Q = Q(__icontains=search_key) if '밥' in food_type else Q()
+    sool_Q = Q(author__username__icontains=search_key) if '술' in food_type else Q()
+    desert_Q = Q(text__icontains=search_key) if '후식' in food_type else Q()
+
+    random_place = None
     return redirect(random_place)
+
+def detail_view(request, place_id):
+    get_object_or_404(Place, pk=place_id)
+    return render(request, 'place/detail_view.html', )
 
 
 
