@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Area, Place
 from bs4 import BeautifulSoup
 import random
@@ -18,7 +18,7 @@ def search_place_list(search_key):
         soup = BeautifulSoup(page_request.text, "html.parser")
         places = soup.select("figure.restaurant-item ")
         place_list = list()
-        for place in places:
+        for count, place in enumerate(places):
             place_img_url = place.select_one("img").get('data-original')
             if place_img_url is None:
                 continue
@@ -51,7 +51,8 @@ def search_place_list(search_key):
                               opening_hour=place_opening_hour)
             place_obj.save()
             place_list.append(place_obj)
-        return place_list
+
+        return place_list[random.randint(0, count)]
 
 
 def search_view(request):
@@ -67,13 +68,12 @@ def search_view(request):
         count = area_places.count()
         random_index = random.randint(0, count-1)
         random_place = area_places[random_index]
-        context['object'] = random_place
-        return render(request, 'place/detail_view.html', context)
+        return redirect(random_place)
 
-    place_list = search_place_list(search_key)
-    return render(request, 'place/detail_view.html')
+    random_place = search_place_list(search_key)
+    return redirect(random_place)
 
-def detail
+
 
 
 

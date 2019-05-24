@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Random Plate{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css.css' %}" type= "text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css.css' %}" type= "text/css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <a class="navbar-brand" href="#">Board</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item my-2 my-sm-0">
+                <a class="nav-link" href="#">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">Login</a>
+            </li>
+            {% endif %}
+
+<!--            my-lg-0 my-2 my-sm-0-->
+
+        </ul>
+        <!--<form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>-->
+    </div>
+</nav>
+
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="/">랜덤 플레이트</a>
+</nav>
+{% block content %}
+<div class="pg-main">
+    <header class="main-header" style="background-image: url('{% static 'images/main_top.jpg' %}');">
+        <p class="title">골라 주는대로 먹어라!</p>
+        <h1 class="title">랜덤 플레이트!</h1>
+        <br />
+        <br />
+        <br />
+        <br />
+    </header>
+</div>
+
+<br />
+<br />
+
+
+<form action="" method="get" id="search_form">
+    {%csrf_token%}
+
+<div class="container h-100">
+      <div class="d-flex justify-content-center h-100">
+        <div class="searchbar">
+            <input class="search_input" type="text" name="search_key" style="color:#ff0000; font-weight:bold;" placeholder="어디로 갈까?">
+            <button type="submit" class="search_icon"><i class="fas fa-search"></i></button>
+<!--          <a href="#" class="search_icon"><i class="fas fa-search"></i></a>-->
+        </div>
+      </div>
+</div>
+<br />
+<br />
+
+<div>
+    <div class="templates-wrapper">
+        <div class="templates-scrollbar" style="position: relative; overflow: hidden; width: 100%; height: 100%;">
+            <div style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; overflow: scroll; margin-right: -15px; margin-bottom: -15px;">
+                <div class="list-templates">
+                    <div class="templates-strip">
+                        <div class="template">
+                            <span class="template-preview color-a">
+                                <span class="image">
+                                    <span class="form-row align-items-center justify-content-center">
+                                        <span class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="밥" name="search_type">
+                                            <label class="form-check-label" style="padding:25px 67px 25px 60px; color:white;"for="inlineCheckbox1">밥</label>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                            <span class="title"></span>
+                        </div>
+                        <div class="template">
+                            <span class="template-preview color-b">
+                                <span class="image">
+                                    <span class="form-row align-items-center justify-content-center">
+                                        <span class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="술" name="search_type">
+                                            <label class="form-check-label" style="padding:25px 67px 25px 60px;" for="inlineCheckbox2">술</label>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="template">
+                            <span class="template-preview color-c">
+                                <span class="image">
+                                    <span class="image">
+                                        <span class="form-row align-items-center justify-content-center">
+                                            <span class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="디저트" name="search_type">
+                                                <label class="form-check-label" style="padding:25px 67px 25px 60px;" for="inlineCheckbox3">디저트</label>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="templates-wrapper">
+        <div class="templates-scrollbar" style="position: relative; overflow: hidden; width: 100%; height: 100%;">
+            <div style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; overflow: scroll; margin-right: -15px; margin-bottom: -15px;">
+                <div class="list-templates">
+                    <div class="templates-strip">
+                        <div class="template">
+                            <span class="template-preview color-d">
+                                <span class="image">
+                                    <span class="form-row align-items-center justify-content-center">
+                                        <span class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="만원" name="search_type">
+                                            <label class="form-check-label" style="padding:25px 67px 25px 60px;" for="inlineCheckbox4">만원</label>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                            <span class="title"></span>
+                        </div>
+                        <div class="template">
+                            <span class="template-preview color-e">
+                                <span class="image">
+                                    <span class="form-row align-items-center justify-content-center">
+                                        <span class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="2만원" name="search_type">
+                                            <label class="form-check-label" style="padding:25px 67px 25px 60px;" for="inlineCheckbox5">2만원이하</label>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="template">
+                            <span class="template-preview color-f">
+                                <span class="image">
+                                    <span class="image">
+                                        <span class="form-row align-items-center justify-content-center">
+                                            <span class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="2만원이상" name="search_type">
+                                                <label class="form-check-label" style="padding:25px 67px 25px 60px;" for="inlineCheckbox6">2만원이상</label>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 선생님이 짜준 체크박스 -->
+
+<!--    <div class="form-row align-items-center justify-content-center">-->
+
+<!--        <div class="form-check form-check-inline">-->
+<!--            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="밥" name="search_type">-->
+<!--            <label class="form-check-label" for="inlineCheckbox1">밥</label>-->
+<!--        </div>-->
+
+<!--        <div class="form-check form-check-inline">-->
+<!--            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="술" name="search_type" checked>-->
+<!--            <label class="form-check-label" for="inlineCheckbox2">술</label>-->
+<!--        </div>-->
+
+<!--        <div class="form-check form-check-inline">-->
+<!--            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="디저트" name="search_type">-->
+<!--            <label class="form-check-label" for="inlineCheckbox3">디저트</label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+
+    <!-- 여기서 부터는 폼 -->
+
+<!--    <div class="form-row align-items-center justify-content-center">-->
+<!--        <div class="col-sm-3 my-1">-->
+<!--            <input type="text" class="form-control" placeholder="어디를 찾아볼까?" name="search_key">-->
+<!--        </div>-->
+<!--        <div class="col-auto my-1">-->
+<!--            <button type="submit" class="btn btn-primary">거기로가자!</button>-->
+<!--        </div>-->
+<!--    </div>-->
+</form>
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
