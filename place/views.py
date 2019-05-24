@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+<<<<<<< HEAD
 from django.views.generic import DetailView
 
 from .models import Area, Place, BOB_Q, SOOL_Q, DESSERT_Q
+=======
+from .models import Area, Place
+>>>>>>> 5d55bdab8c258c2eaf54ea88ee0e41dffbd86c18
 from bs4 import BeautifulSoup
 from django.db.models import Q
 import random
@@ -18,21 +22,18 @@ CUSTOM_HEADER = {
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/'
                   '537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
 }
-
 def search_place_list(search_key):
-
+    area = Area.objects.create(name=search_key.strip())
     for i in range(1, 5):
         page_url = "https://www.mangoplate.com/search/?keyword="+str(search_key)+"&page="+str(i)
         page_request = requests.get(page_url, headers=CUSTOM_HEADER)
         soup = BeautifulSoup(page_request.text, "html.parser")
         places = soup.select("figure.restaurant-item ")
-        place_list = list()
-        count = 0
+
         for place in places:
             place_img_url = place.select_one("img").get('data-original')
             if place_img_url is None:
                 continue
-
             place_url = "https://www.mangoplate.com" + place.select_one(".info a").get('href')
             place_request = requests.get(place_url, headers=CUSTOM_HEADER)
             place_soup = BeautifulSoup(place_request.text, "html.parser")
@@ -52,19 +53,18 @@ def search_place_list(search_key):
             place_car = place_dict.get('주차')
             place_opening_hour = place_dict.get('영업시간')
 
-            place_obj = Place(name=place_name,
-                              url=place_url,
-                              image_url=place_img_url,
-                              address=place_address,
-                              phone=place_phone,
-                              detail_category=place_detail_category,
-                              price=place_price,
-                              car=place_car,
-                              opening_hour=place_opening_hour)
+            place_obj = Place.objects.create(name=place_name,
+                                             url=place_url,
+                                             image_url=place_img_url,
+                                             address=place_address,
+                                             phone=place_phone,
+                                             detail_category=place_detail_category,
+                                             price=place_price,
+                                             car=place_car,
+                                             opening_hour=place_opening_hour)
+            place_obj.area.add(area)
             place_obj.save()
-            place_list.append(place_obj)
-            count += 1
-        return place_list[random.randint(0, count)]
+        return
 
 
 def search_view(request):
@@ -72,9 +72,9 @@ def search_view(request):
         return render(request, 'place/search_view.html')
 
     food_type = request.POST.getlist('food_type', '밥')
-    bob_Q = Q(category_Category_id=3) if '밥' in food_type else Q()
-    sool_Q = Q(category_Category_id=1) if '술' in food_type else Q()
-    desert_Q = Q(category_Category_id=2) if '후식' in food_type else Q()
+    bob_Q = Q(category_id=3) if '밥' in food_type else Q()
+    sool_Q = Q(category_id=1) if '술' in food_type else Q()
+    desert_Q = Q(category_id=2) if '후식' in food_type else Q()
 
     money_type = request.POST.getlist('money_type', '만원')
     money1_Q = Q(price='만원 미만') if '만원' in money_type else Q()
@@ -85,23 +85,23 @@ def search_view(request):
     area_filter = Area.objects.filter(name=search_key)
 
     if area_filter.exists():
-        area_places = area_filter[0].places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
-        count = area_places.count()
-        random_index = random.randint(0, count-1)
-        random_place = area_places[random_index]
-        return redirect(random_place)
-
-    search_place_list(search_key)
-    place_filter = Place.objects.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
+        place_filter = area_filter[0].places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
+    else:
+        search_place_list(search_key)
+        place_filter = Area.objects.get(name=search_key).places.filter(bob_Q| sool_Q| desert_Q| money1_Q| money2_Q| money3_Q)
     place_count = place_filter.count()
     random_index = random.randint(0, place_count-1)
     random_place = place_filter[random_index]
     return redirect(random_place)
 
 
-class Detail_view(DetailView):
-    model = Place
-    template_name_suffix = '_detail'
+
+def detail_view(request, place_id):
+    object = get_object_or_404(Place, pk=place_id)
+    location_x, location_y = object.address_to_location()
+    return render(request, 'place/detail_view.html', {'object': object,
+                                                      'location_x': location_x,
+                                                      'location_y': location_y})
 
 
 class PlaceLike(View):

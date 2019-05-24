@@ -1,7 +1,7 @@
 from django.db import models
 from django.shortcuts import reverse
-from django.db.models import Q
 from django.contrib.auth.models import User
+import requests
 
 
 class Category(models.Model):
@@ -43,13 +43,16 @@ class Place(models.Model):
     def get_absolute_url(self):
         return reverse('place:detail', args=[self.id])
 
+    def address_to_location(self):
 
-
-DESSERT_Q = Q(detail_category__icontains='카페 / 디저트') | Q(detail_category__icontains='베이커리')
-
-SOOL_Q = Q(detail_category__icontains='일반 주점') | \
-         Q(detail_category__icontains='칵테일 / 와인') | \
-         Q(detail_category__icontains='치킨 / 호프 / 펍') | \
-         Q(detail_category__icontains='전통 주점 / 포차') | Q(detail_category__icontains='이자카야 / 오뎅 / 꼬치')
-
-BOB_Q = ~DESSERT_Q & ~SOOL_Q
+        url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="+self.address+"&coordinate=11,10"
+        custom_headers = {
+            "X-NCP-APIGW-API-KEY-ID" : 'utkqk0r5dp',
+            "X-NCP-APIGW-API-KEY" : "oc9RIxevNLeRbwhMECDKOqlt5EAdRPqi5BpdW4rE"
+        }
+        req=requests.get(url, headers=custom_headers)
+        try:
+            return (req.json()["addresses"][0]["x"], req.json()["addresses"][0]["y"])
+        except:
+            print(self.address, '좌표화 불가')
+            return None
