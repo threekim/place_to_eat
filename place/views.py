@@ -50,6 +50,7 @@ def search_place_list():
 def search_view(request):
     if request.method == 'GET':
         return render(request, 'place/search_view.html')
+
     context = dict()
     search_key = request.POST.get('search_key'.strip())
     area_filter = Area.objects.filter(name=search_key)
@@ -60,7 +61,8 @@ def search_view(request):
         random_index = random.randint(0, count-1)
         random_place = area_places[random_index]
         context['object'] = random_place
-        return render(request, 'place/detail_view.html', random_place)
+        return render(request, 'place/detail_view.html', context)
+
 
 
 
